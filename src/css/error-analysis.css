@@ -1,0 +1,920 @@
+/* error-analysis.css */
+/* 錯誤分析 UI 組件樣式 - 優化版 */
+
+/* 錯誤分析模態框 */
+.error-analysis-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85); /* 稍微增加背景透明度 */
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  backdrop-filter: blur(4px); /* 增加背景模糊效果 */
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.error-analysis-modal.show {
+  display: flex;
+  animation: fadeInBackdrop 0.3s ease-out;
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
+
+/* 錯誤分析容器 */
+.error-analysis-container {
+  background: linear-gradient(145deg, #ffffff, #f8fafc); /* 增加漸層背景 */
+  border-radius: 20px; /* 增加圓角 */
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.15),
+    0 10px 20px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6); /* 多層陰影效果 */
+  animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 更流暢的動畫 */
+  transform-origin: center;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 錯誤分析標題區域 - 增強版 */
+.error-analysis-header {
+  padding: 28px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+  border-radius: 20px 20px 0 0;
+  position: relative;
+}
+
+/* 添加裝飾性元素 */
+.error-analysis-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+  border-radius: 20px 20px 0 0;
+}
+
+.error-type {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.error-type.severity-light {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.12));
+  border-left: 4px solid #22c55e;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.error-type.severity-medium {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(251, 191, 36, 0.12));
+  border-left: 4px solid #fbbf24;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.error-type.severity-severe {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.12));
+  border-left: 4px solid #ef4444;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.error-icon {
+  font-size: 28px; /* 稍微增大圖標 */
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.error-info h4 {
+  font-size: 20px; /* 增大標題 */
+  font-weight: 700; /* 增加字重 */
+  color: #1f2937;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.025em;
+}
+
+.error-severity {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* 信心度指示器 - 增強版 */
+.confidence-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.confidence-label {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.confidence-bar {
+  flex: 1;
+  height: 10px; /* 稍微增加高度 */
+  background: linear-gradient(90deg, #f1f5f9, #e2e8f0);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8, #7c3aed);
+  border-radius: 5px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* 更流暢的動畫 */
+  position: relative;
+}
+
+/* 添加閃爍效果 */
+.confidence-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.confidence-value {
+  font-size: 15px; /* 稍微增大 */
+  font-weight: 700;
+  color: #1f2937;
+  min-width: 45px;
+  text-align: center;
+}
+
+/* 錯誤分析內容 - 增強版 */
+.error-analysis-content {
+  padding: 28px;
+}
+
+.error-analysis-content > div {
+  margin-bottom: 28px;
+  animation: fadeInUp 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+.error-analysis-content > div:nth-child(1) { animation-delay: 0.1s; }
+.error-analysis-content > div:nth-child(2) { animation-delay: 0.2s; }
+.error-analysis-content > div:nth-child(3) { animation-delay: 0.3s; }
+.error-analysis-content > div:nth-child(4) { animation-delay: 0.4s; }
+.error-analysis-content > div:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-analysis-content > div:last-child {
+  margin-bottom: 0;
+}
+
+.error-analysis-content h5 {
+  font-size: 17px; /* 稍微增大 */
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.025em;
+}
+
+/* 根本原因分析區域 - 增強版 */
+.root-cause-section {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.root-cause-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+}
+
+.root-cause-content p {
+  color: #4b5563;
+  line-height: 1.7; /* 增加行高 */
+  margin: 0;
+  font-size: 15px;
+}
+
+/* 建議列表 - 增強版 */
+.suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f3f4f6;
+  transition: all 0.3s ease;
+}
+
+.suggestion-item:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(59, 130, 246, 0.06));
+  padding-left: 8px;
+  margin-left: -8px;
+  border-radius: 8px;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-icon {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.suggestion-text {
+  color: #374151;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* 相關概念標籤 */
+.concepts-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.concept-tag {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 推薦練習卡片 */
+.practice-recommendations {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.practice-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.practice-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+.practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.practice-header h6 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.practice-difficulty {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.practice-difficulty.easy {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.practice-difficulty.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.practice-difficulty.hard {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.practice-difficulty.expert {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.practice-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.practice-count,
+.practice-focus {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.start-practice {
+  width: 100%;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.start-practice:hover {
+  background: #2563eb;
+}
+
+/* 學習策略和其他內容區域 */
+.learning-strategy-section,
+.time-analysis-section,
+.next-steps-section {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.strategy-content p,
+.time-analysis-content p,
+.next-steps-content p {
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 錯誤分析操作按鈕 */
+.error-analysis-actions {
+  padding: 20px 24px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #f9fafb;
+  border-radius: 0 0 16px 16px;
+}
+
+.error-analysis-actions button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mark-resolved {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.mark-resolved:hover {
+  background: #e5e7eb;
+}
+
+.mark-resolved.resolved {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.close-analysis {
+  background: #3b82f6;
+  color: white;
+  border: 1px solid #3b82f6;
+}
+
+.close-analysis:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* 載入狀態 */
+.error-analysis-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  color: #6b7280;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-analysis-loading p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* 錯誤狀態 */
+.error-analysis-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.error-analysis-error .error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.error-analysis-error h4 {
+  color: #ef4444;
+  margin: 0 0 12px 0;
+  font-size: 18px;
+}
+
+.error-analysis-error p {
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.retry-analysis {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.retry-analysis:hover {
+  background: #2563eb;
+}
+
+/* 成功訊息 */
+.error-analysis-success {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #dcfce7;
+  color: #166534;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
+  z-index: 1100;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.3s ease-out;
+  display: none;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .error-analysis-modal {
+    padding: 10px;
+  }
+  
+  .error-analysis-container {
+    max-height: 95vh;
+    border-radius: 12px;
+  }
+  
+  .error-analysis-header,
+  .error-analysis-content {
+    padding: 16px;
+  }
+  
+  .error-analysis-actions {
+    padding: 16px;
+    flex-direction: column;
+  }
+  
+  .error-analysis-actions button {
+    width: 100%;
+  }
+  
+  .practice-recommendations {
+    grid-template-columns: 1fr;
+  }
+  
+  .confidence-indicator {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .confidence-label {
+    min-width: auto;
+  }
+  
+  .error-analysis-success {
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-type {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .practice-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .concepts-tags {
+    justify-content: center;
+  }
+}
+
+/* 補強學習內容區域 */
+.remediation-content-section {
+  background: #fefefe;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.remediation-content-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 補強內容項目基本樣式 */
+.remediation-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.remediation-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 對話片段樣式 */
+.conversation-snippet {
+  border-left: 4px solid #8b5cf6;
+}
+
+.remediation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.remediation-header h6 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  flex: 1;
+}
+
+.conversation-toggle {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.conversation-toggle:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.conversation-content {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.conversation-text {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 6px;
+  border-left: 3px solid #8b5cf6;
+  font-style: italic;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.conversation-source {
+  text-align: right;
+  color: #9ca3af;
+}
+
+/* 外部連結樣式 */
+.external-link {
+  border-left: 4px solid #3b82f6;
+}
+
+.link-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.link-header h6 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  flex: 1;
+}
+
+.link-category {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.link-description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.external-link-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.external-link-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* 小解釋樣式 */
+.mini-explanation {
+  border-left: 4px solid #10b981;
+}
+
+.explanation-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.explanation-content h6 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.explanation-text {
+  color: #4b5563;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.explanation-examples {
+  background: #f0fdf4;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #dcfce7;
+}
+
+.explanation-examples strong {
+  color: #166534;
+  font-size: 14px;
+}
+
+.explanation-examples ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+  color: #166534;
+}
+
+.explanation-examples li {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.explanation-difficulty {
+  text-align: right;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* 響應式設計 - 補強內容 */
+@media (max-width: 768px) {
+  .remediation-content-section {
+    padding: 12px;
+  }
+  
+  .remediation-item {
+    padding: 12px;
+  }
+  
+  .remediation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .conversation-toggle {
+    align-self: flex-end;
+  }
+  
+  .link-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .link-category {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .conversation-text {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .external-link-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .explanation-examples {
+    padding: 10px;
+  }
+} 

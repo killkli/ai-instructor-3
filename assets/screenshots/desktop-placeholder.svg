@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#f8fafc"/>
+  
+  <!-- 標題欄 -->
+  <rect x="0" y="0" width="1280" height="60" fill="#4f46e5"/>
+  <text x="640" y="35" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">AI教學助理 - 智慧學習夥伴</text>
+  
+  <!-- 側邊欄 -->
+  <rect x="0" y="60" width="300" height="660" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="150" y="100" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#374151" text-anchor="middle">會話記錄</text>
+  
+  <!-- 聊天區域 -->
+  <rect x="300" y="60" width="980" height="660" fill="#ffffff"/>
+  
+  <!-- 訊息氣泡 -->
+  <rect x="350" y="120" width="400" height="80" rx="20" fill="#4f46e5"/>
+  <text x="550" y="150" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">歡迎使用AI教學助理！</text>
+  <text x="550" y="170" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">我是你的學習夥伴</text>
+  
+  <rect x="530" y="220" width="400" height="60" rx="20" fill="#e5e7eb"/>
+  <text x="730" y="245" font-family="Arial, sans-serif" font-size="14" fill="#374151" text-anchor="middle">我想學習數學</text>
+  
+  <!-- 輸入區域 -->
+  <rect x="320" y="640" width="940" height="60" fill="#f9fafb" stroke="#e5e7eb"/>
+  <text x="790" y="675" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af" text-anchor="middle">輸入您的問題或學習需求...</text>
+</svg> 

@@ -1,0 +1,204 @@
+/**
+ * PWA 相關樣式
+ * 包含安裝按鈕、安裝提示等UI元素的樣式
+ */
+
+/* PWA 安裝按鈕 */
+.install-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.install-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.install-button:active {
+  transform: translateY(0);
+}
+
+.install-button span {
+  font-size: 1.2em;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* PWA 安裝提示 */
+.pwa-install-prompt {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  max-width: 320px;
+  z-index: 1000;
+  border: 1px solid #e5e7eb;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.pwa-install-prompt-content {
+  margin-bottom: 16px;
+}
+
+.pwa-install-prompt-content h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-install-prompt-content p {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.pwa-install-prompt-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.pwa-install-prompt-actions button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.pwa-install-prompt-actions .install-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.pwa-install-prompt-actions .install-btn:hover {
+  background: #2563eb;
+}
+
+.pwa-install-prompt-actions .dismiss-btn {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.pwa-install-prompt-actions .dismiss-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* 響應式設計 */
+@media (max-width: 480px) {
+  .pwa-install-prompt {
+    top: 70px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+  
+  .pwa-install-prompt-actions {
+    flex-direction: column;
+  }
+  
+  .pwa-install-prompt-actions button {
+    width: 100%;
+    padding: 12px 16px;
+  }
+}
+
+/* 深色模式支援 */
+@media (prefers-color-scheme: dark) {
+  .pwa-install-prompt {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .pwa-install-prompt-content h4 {
+    color: #f9fafb;
+  }
+  
+  .pwa-install-prompt-content p {
+    color: #d1d5db;
+  }
+  
+  .pwa-install-prompt-actions .dismiss-btn {
+    background: #374151;
+    color: #d1d5db;
+  }
+  
+  .pwa-install-prompt-actions .dismiss-btn:hover {
+    background: #4b5563;
+    color: #f9fafb;
+  }
+}
+
+/* 隱藏/顯示動畫 */
+.pwa-install-prompt.hiding {
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* PWA 相關的狀態指示器 */
+.pwa-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f3f4f6;
+}
+
+.pwa-status.installed {
+  color: #059669;
+  background: #ecfdf5;
+}
+
+.pwa-status.installable {
+  color: #dc2626;
+  background: #fef2f2;
+} 

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI教學助理 - 智慧學習夥伴</title>
+
+    <!-- PWA支援 -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2196F3">
+    <meta name="description" content="專為國小國中學生設計的AI教學助理，採用CPA教學法提供個性化學習體驗">
+
+    <!-- 圖標 -->
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AI助理">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./src/css/main.css">
+    <link rel="stylesheet" href="./src/css/components.css">
+    <link rel="stylesheet" href="./src/css/responsive.css">
+    <link rel="stylesheet" href="./src/css/pwa.css">
+    <link rel="stylesheet" href="./src/css/error-analysis.css">
+
+    <!-- 第三方庫 CSS -->
+    <link rel="stylesheet" href="./vendor/css/katex.min.css">
+    <link rel="stylesheet" href="./vendor/css/highlight-github.min.css">
+
+    <!-- 預載入關鍵資源 -->
+    <link rel="preload" href="./src/config/ai-instructor-prompts.json" as="fetch" crossorigin>
+</head>
+
+<body>
+    <!-- 載入畫面 -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <h2>AI教學助理</h2>
+            <p>正在準備您的學習環境...</p>
+        </div>
+    </div>
+
+    <!-- 主應用 -->
+    <div id="app" class="app hidden">
+        <!-- 標題欄 -->
+        <header class="app-header">
+            <div class="header-content">
+                <button id="sidebar-toggle" class="icon-button sidebar-toggle" title="會話列表">
+                    <span>☰</span>
+                </button>
+                <h1 class="app-title">
+                    <span class="icon">🤖</span>
+                    AI教學助理
+                </h1>
+                <div class="header-actions">
+                    <button id="achievements-button" class="icon-button" title="我的成就">
+                        <span>🏆</span>
+                    </button>
+                    <button id="settings-button" class="icon-button" title="設定">
+                        <span>⚙️</span>
+                    </button>
+                    <button id="new-chat-button" class="icon-button" title="新會話">
+                        <span>➕</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要內容區 -->
+        <main class="app-main">
+            <!-- 側邊欄覆蓋層 -->
+            <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+            <!-- 側邊欄 -->
+            <aside id="sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <h3>會話記錄</h3>
+                    <button id="sidebar-toggle" class="toggle-button">
+                        <span>📋</span>
+                    </button>
+                </div>
+
+                <div class="session-list" id="sessions-list">
+                    <!-- 會話列表將動態載入 -->
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="export-actions">
+                        <button id="export-current-session" class="sidebar-action-btn" title="匯出當前會話">
+                            <span>📤</span> 匯出
+                        </button>
+                        <button id="export-all-sessions" class="sidebar-action-btn" title="匯出所有會話">
+                            <span>📦</span> 全部
+                        </button>
+                    </div>
+                    <div class="model-info" id="model-info">
+                        <small>模型：載入中...</small>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 聊天區域 -->
+            <section id="chat-container" class="chat-container">
+                <!-- API金鑰設定提示 -->
+                <div id="setup-modal" class="api-key-prompt">
+                    <div class="prompt-content">
+                        <h3>🔑 設定API金鑰</h3>
+                        <p>請輸入您的Google Gemini API金鑰以開始使用AI教學助理</p>
+                        <div class="input-group">
+                            <input type="password" id="api-key-input" placeholder="請輸入Gemini API Key"
+                                class="api-key-input">
+                            <button id="save-api-key" class="primary-button">
+                                儲存並開始
+                            </button>
+                        </div>
+                        <div class="help-text">
+                            <details>
+                                <summary>如何獲取API金鑰？</summary>
+                                <p>1. 前往 <a href="https://ai.google.dev/" target="_blank" rel="noopener">Google AI
+                                        Studio</a></p>
+                                <p>2. 登入您的Google帳號</p>
+                                <p>3. 創建新的API金鑰</p>
+                                <p>4. 複製金鑰並貼上到上方輸入框</p>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 聊天訊息區 -->
+                <div id="messages" class="chat-messages hidden">
+                    <div class="message-wrapper assistant welcome-message">
+                        <div class="message-avatar assistant">🤖</div>
+                        <div class="message-bubble assistant">
+                            <div class="message-content">
+                                <h3>歡迎使用AI教學助理！</h3>
+                                <p>我是你的學習夥伴，讓我們一起探索知識的世界吧！</p>
+                                <div class="quick-actions">
+                                    <button class="quick-action" data-message="我想學習數學">📊 數學學習</button>
+                                    <button class="quick-action" data-message="我有問題想問">❓ 問題解答</button>
+                                    <button class="quick-action" data-message="幫我複習">📚 複習功能</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 輸入區域 -->
+                <div id="input-area" class="input-area hidden">
+                    <div class="input-container">
+                        <textarea id="message-input" placeholder="輸入您的問題或學習需求，或點擊語音按鈕使用語音輸入..." class="message-input"
+                            rows="1"></textarea>
+
+                        <div class="send-area">
+                            <button id="image-upload-btn" class="icon-button" title="上傳圖片">
+                                <span>🖼️</span>
+                            </button>
+                            <input type="file" id="image-upload" accept="image/*" multiple style="display: none;"
+                                capture="environment">
+                            <button id="practice-btn" class="icon-button" title="練習題">
+                                <span>📚</span>
+                            </button>
+                            <div class="voice-input-buttons">
+                                <button id="voice-input-chinese-btn" class="voice-input-btn voice-chinese-btn"
+                                    title="中文語音輸入" data-lang="zh-TW">
+                                    <span class="voice-label">C</span>
+                                </button>
+                                <button id="voice-input-english-btn" class="voice-input-btn voice-english-btn"
+                                    title="英文語音輸入 (練習口說)" data-lang="en-US">
+                                    <span class="voice-label">E</span>
+                                </button>
+                            </div>
+                            <button id="send-button" class="send-button" disabled>
+                                <span>➤</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 圖片預覽區域 -->
+                    <div id="image-preview" class="image-preview" style="display: none;"></div>
+
+                    <!-- 語音識別狀態指示器 -->
+                    <div id="voice-status" class="voice-status" style="display: none;">
+                        <div class="voice-status-content">
+                            <div class="voice-status-icon">
+                                <span class="voice-icon-animated">🎤</span>
+                            </div>
+                            <div class="voice-status-text">
+                                <span id="voice-status-message">正在聆聽...</span>
+                                <div class="voice-waveform">
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                    <div class="wave-bar"></div>
+                                </div>
+                            </div>
+                            <button id="voice-stop-btn" class="voice-stop-btn" title="停止語音輸入">
+                                <span>⏹️</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-hints">
+                        <div class="command-hints">
+                            <small>
+                                快速指令：<code>/new</code> 新會話 | <code>/current</code> 當前會話 |
+                                <code>/summary</code> 總結 | <code>/question</code> 提問
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 成就彈窗 -->
+    <div id="achievements-modal" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>🏆 我的成就</h3>
+                <button class="close-button modal-close">✖</button>
+            </div>
+            <div class="modal-body" id="achievements-container">
+                <!-- 成就內容將動態載入 -->
+                <div class="loading-achievements">正在載入成就...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 設定彈窗 -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>設定</h3>
+                <button class="close-button modal-close">✖</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label for="current-api-key">API 金鑰</label>
+                    <div class="api-key-setting">
+                        <input type="password" id="current-api-key" placeholder="輸入新的 API 金鑰以更新" class="setting-input">
+                        <button id="update-api-key" class="secondary-button">更新金鑰</button>
+                    </div>
+                    <small class="help-text">留空表示保持當前設定</small>
+
+                    <div class="share-section">
+                        <label>分享機器人</label>
+                        <div class="share-controls">
+                            <button id="generate-share-link" class="secondary-button">🔗 生成分享連結</button>
+                            <button id="copy-share-link" class="secondary-button" disabled>📋 複製連結</button>
+                        </div>
+                        <input type="text" id="share-link-input" class="setting-input share-link-input"
+                            placeholder="點擊「生成分享連結」來創建可分享的連結" readonly style="display: none;">
+                        <small class="help-text">
+                            生成包含您 API Key 的分享連結，朋友點擊後可直接使用聊天機器人。
+                            <br><strong>⚠️ 注意：</strong>分享連結包含您的 API Key，請只分享給信任的人。
+                        </small>
+                    </div>
+
+                    <div class="export-section">
+                        <label>對話匯出</label>
+                        <div class="export-controls">
+                            <button id="export-settings-btn" class="secondary-button">📤 匯出對話</button>
+                        </div>
+                        <small class="help-text">
+                            匯出您的對話記錄為不同格式的檔案，包括 JSON、文字檔、Markdown 和 HTML 格式。
+                        </small>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label for="model-select">AI模型選擇</label>
+                    <select id="model-select" class="setting-input">
+                        <option value="">載入中...</option>
+                    </select>
+                    <small class="help-text" id="model-help-text">正在獲取可用模型列表...</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="temperature-slider">創造性程度</label>
+                    <input type="range" id="temperature-slider" min="0" max="1" step="0.1" value="0.7"
+                        class="setting-slider">
+                    <span id="temperature-value">0.7</span>
+                </div>
+
+                <div class="setting-group current-role-display" id="current-role-display" style="display: none;">
+                    <label>當前學習角色</label>
+                    <div class="role-display-content">
+                        <span class="role-icon" id="current-role-icon">🎓</span>
+                        <span class="role-name" id="current-role-name">通用學習助理</span>
+                    </div>
+                    <small class="help-text">練習題目將根據您選擇的學習角色自動調整科目類型。如需更換角色，請開始新的對話會話。</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="custom-system-prompt">自定義系統提示詞</label>
+                    <textarea id="custom-system-prompt" class="setting-textarea"
+                        placeholder="輸入您的自定義系統提示詞，留空則使用預設提示詞..." rows="6"></textarea>
+                    <small class="help-text">
+                        自定義提示詞將覆蓋預設的教學助理設定。您可以定義AI的角色、行為和回應風格。
+                        <br>
+                        <strong>提示：</strong>可以使用 {current_datetime} 變數來插入當前時間。
+                    </small>
+                    <div class="prompt-actions">
+                        <button id="reset-system-prompt" class="secondary-button" type="button">重置為預設</button>
+                        <button id="preview-system-prompt" class="secondary-button" type="button">預覽提示詞</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="streaming-enabled" checked>
+                        啟用串流回應
+                    </label>
+                    <small class="help-text">即時顯示 AI 回應，提供更流暢的對話體驗</small>
+                </div>
+                <!-- <div class="setting-group"> -->
+                <!--     <label> -->
+                <!--         <input type="checkbox" id="adaptive-difficulty" checked> -->
+                <!--         自動調整難度 -->
+                <!--     </label> -->
+                <!--     <small class="help-text">AI 會根據您的回應調整教學難度和節奏，提供個人化學習體驗</small> -->
+                <!-- </div> -->
+                <!---->
+                <!-- <div class="setting-group"> -->
+                <!--     <label> -->
+                <!--         <input type="checkbox" id="step-by-step" checked> -->
+                <!--         分步驟教學 -->
+                <!--     </label> -->
+                <!--     <small class="help-text">將複雜概念分解為小步驟，每步確認理解後再繼續</small> -->
+                <!-- </div> -->
+            </div>
+
+            <div class="modal-footer">
+                <button id="preview-settings-effect" class="secondary-button">預覽設定效果</button>
+                <button id="save-settings" class="primary-button">儲存設定</button>
+                <button id="reset-data" class="danger-button">清除所有資料</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 角色選擇彈窗 -->
+    <div id="role-selection-modal" class="role-selection-modal hidden">
+        <div class="role-selection-content">
+            <div class="role-selection-header">
+                <h2>選擇學習角色</h2>
+                <p>請選擇你想學習的科目，我會成為專屬的教學助理！</p>
+            </div>
+
+            <div class="role-grid" id="role-grid">
+                <!-- 角色卡片將動態生成 -->
+            </div>
+
+            <div class="role-selection-actions">
+                <button id="role-selection-cancel" class="secondary-button">取消</button>
+                <button id="role-selection-confirm" class="primary-button" disabled>開始學習</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 練習題模態框 -->
+    <div id="practice-modal" class="modal practice-modal hidden">
+        <div class="modal-content practice-modal-content">
+            <div class="modal-header practice-modal-header">
+                <h3 id="practice-modal-title">📚 練習題</h3>
+                <button class="close-button modal-close">✖</button>
+            </div>
+
+            <div class="modal-body practice-modal-body">
+                <div id="practice-question-container" class="practice-question-container">
+                    <!-- 練習題內容將在這裡顯示 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提示詞預覽模態框 -->
+    <div id="prompt-preview-modal" class="modal prompt-preview-modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>系統提示詞預覽</h3>
+                <button class="close-button modal-close">✖</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="prompt-preview-content" id="prompt-preview-content">
+                    <!-- 提示詞內容將在這裡顯示 -->
+                </div>
+                <div class="prompt-stats">
+                    <span class="prompt-length">字數: <span id="prompt-char-count">0</span></span>
+                    <span class="prompt-tokens">預估Token數: <span id="prompt-token-count">0</span></span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="secondary-button modal-close">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 匯出對話模態框 -->
+    <div id="export-modal" class="modal export-modal hidden">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>📤 匯出對話記錄</h3>
+                <button class="close-button modal-close">✖</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 匯出統計資訊 -->
+                <div class="export-stats" id="export-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">總會話數</span>
+                            <span class="stat-value" id="total-sessions">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">總訊息數</span>
+                            <span class="stat-value" id="total-messages">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">預估字數</span>
+                            <span class="stat-value" id="estimated-chars">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 匯出選項 -->
+                <div class="export-options">
+                    <div class="export-type-selection">
+                        <h4>匯出範圍</h4>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="export-scope" value="current" checked>
+                                <span class="radio-label">當前會話</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="export-scope" value="selected">
+                                <span class="radio-label">選擇會話</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="export-scope" value="all">
+                                <span class="radio-label">所有會話</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="export-scope" value="filtered">
+                                <span class="radio-label">條件篩選</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 會話選擇區域 -->
+                    <div class="session-selection" id="session-selection" style="display: none;">
+                        <h4>選擇要匯出的會話</h4>
+                        <div class="session-checkboxes" id="session-checkboxes">
+                            <!-- 會話選擇框將動態生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 篩選條件區域 -->
+                    <div class="filter-options" id="filter-options" style="display: none;">
+                        <h4>篩選條件</h4>
+                        <div class="filter-grid">
+                            <div class="filter-item">
+                                <label>日期範圍</label>
+                                <div class="date-range">
+                                    <input type="date" id="filter-date-from" class="filter-input">
+                                    <span>至</span>
+                                    <input type="date" id="filter-date-to" class="filter-input">
+                                </div>
+                            </div>
+                            <div class="filter-item">
+                                <label>角色類型</label>
+                                <select id="filter-role" class="filter-input">
+                                    <option value="">全部角色</option>
+                                    <!-- 角色選項將動態生成 -->
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>訊息數量</label>
+                                <div class="number-range">
+                                    <input type="number" id="filter-min-messages" placeholder="最少" class="filter-input">
+                                    <span>-</span>
+                                    <input type="number" id="filter-max-messages" placeholder="最多" class="filter-input">
+                                </div>
+                            </div>
+                            <div class="filter-item">
+                                <label>標題關鍵字</label>
+                                <input type="text" id="filter-keyword" placeholder="搜尋標題..." class="filter-input">
+                            </div>
+                        </div>
+                        <button id="apply-filter" class="secondary-button">套用篩選</button>
+                    </div>
+
+                    <!-- 格式選擇 -->
+                    <div class="format-selection">
+                        <h4>匯出格式</h4>
+                        <div class="format-grid" id="format-grid">
+                            <!-- 格式選項將動態生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 預覽區域 -->
+                    <div class="export-preview">
+                        <h4>預覽</h4>
+                        <div class="preview-controls">
+                            <button id="generate-preview" class="secondary-button">生成預覽</button>
+                            <button id="copy-preview" class="secondary-button" disabled>複製內容</button>
+                        </div>
+                        <div class="preview-content" id="preview-content">
+                            <div class="preview-placeholder">
+                                點擊「生成預覽」來查看匯出內容
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="export-actions">
+                    <button id="download-export" class="primary-button" disabled>下載檔案</button>
+                    <button class="secondary-button modal-close">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 載入指示器 -->
+    <div id="loading-indicator" class="loading-overlay loading-indicator">載入中...</div>
+
+    <!-- 打字指示器 -->
+    <div id="typing-indicator" class="typing-indicator hidden">
+        <div class="typing-avatar">🤖</div>
+        <div class="typing-bubble">
+            <div class="typing-dots">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </div>
+            <span class="typing-text">AI正在思考中...</span>
+        </div>
+    </div>
+    <!-- 通知區域 -->
+    <div id="notifications" class="notifications"></div>
+    <script>
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker 註冊成功！範圍:', registration.scope);
+
+                        // --- 核心實作點：監聽 Service Worker 的更新 ---
+                        registration.onupdatefound = () => {
+                            // 獲取正在安裝的新 Service Worker
+                            const installingWorker = registration.installing;
+
+                            if (installingWorker == null) {
+                                // 沒有正在安裝的 Service Worker，可能是一個 Edge case
+                                return;
+                            }
+
+                            // 監聽新 Service Worker 的狀態變化
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed') {
+                                    // 新的 Service Worker 已經被安裝了，但可能還在 "waiting" 狀態
+                                    // 檢查 navigator.serviceWorker.controller 是否存在，
+                                    // 如果存在，表示目前有一個舊的 Service Worker 在控制頁面，
+                                    // 且一個新的 Service Worker 已經準備好接管。
+                                    if (navigator.serviceWorker.controller) {
+                                        // 在這裡，您可以向用戶顯示一個 UI 提示，例如一個 Toast 或橫幅
+                                        console.log('Service Worker: 新版本已安裝，請重新整理以更新。');
+                                        showUpdatePrompt(); // 呼叫一個函數來顯示更新提示
+                                    } else {
+                                        // 這是應用程式第一次載入，或者舊的 Service Worker 不存在。
+                                        // 新的 Service Worker 已經成功安裝並激活，無需用戶操作。
+                                        console.log('Service Worker: 內容已快取用於離線使用。');
+                                    }
+                                }
+                            };
+                        };
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        /**
+         * 顯示一個提示給用戶，告知有新版本可用並提供刷新選項。
+         */
+
+        function showUpdatePrompt() {
+            // 檢查是否已經有提示在顯示，避免重複創建
+            let updateBanner = document.getElementById('update-banner');
+            if (updateBanner) return;
+
+            updateBanner = document.createElement('div');
+            updateBanner.id = 'update-banner';
+            updateBanner.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333; /* 深灰色背景 */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 10000;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+    cursor: pointer; /* 讓整個提示可點擊 */
+  `;
+            updateBanner.innerHTML = `
+    <span>🎉 新版本可用！點擊立即更新</span>
+    <button id="refresh-app-button" style="
+      background-color: #007bff; /* 藍色按鈕 */
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      transition: background-color 0.3s ease;
+    ">刷新</button>
+  `;
+            document.body.appendChild(updateBanner);
+
+            // 添加 CSS 動畫
+            const style = document.createElement('style');
+            style.innerHTML = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+  `;
+            document.head.appendChild(style);
+
+            // 監聽刷新按鈕的點擊事件
+            document.getElementById('refresh-app-button').addEventListener('click', () => {
+                // 即使 sw.js 中已經有 self.skipWaiting()，
+                // 這裡再發送一次消息可以作為一種確認，確保新 SW 立即激活。
+                // 最關鍵的是隨後的頁面刷新。
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                }
+                window.location.reload(); // 強制刷新頁面，以載入所有新快取資源和應用程式邏輯
+            });
+
+            // 如果用戶點擊提示框的其他區域，也觸發刷新 (可選)
+            updateBanner.addEventListener('click', (event) => {
+                if (event.target.id !== 'refresh-app-button') {
+                    if (navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                    }
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+
+    <!-- 第三方庫 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="./vendor/js/markdown-it.min.js"></script>
+    <script src="./vendor/js/katex.min.js"></script>
+    <script src="./vendor/js/highlight.min.js"></script>
+    <!-- 匯出功能所需的庫 -->
+    <script src="vendor/js/jspdf.umd.min.js"></script>
+    <script src="vendor/js/jspdf-autotable.min.js"></script>
+    <script src="vendor/js/xlsx.full.min.js"></script>
+    <script src="vendor/js/FileSaver.min.js"></script>
+    <script src="vendor/js/html2canvas.min.js"></script>
+
+    <!-- Canvas 視覺化服務 -->
+    <script type="module" src="./src/js/services/canvas-visualization.js"></script>
+    <script type="module" src="./src/js/services/learning-visualization-wrapper.js"></script>
+
+    <!-- 主要JavaScript模組 -->
+    <script type="module" src="./src/js/app.js"></script>
+</body>
+
+</html>

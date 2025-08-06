@@ -1,0 +1,631 @@
+/* AI教學助理 - 響應式設計 */
+
+/* 平板電腦 (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+  .sidebar {
+    width: 250px;
+  }
+
+  .header-content {
+    padding: 0 var(--spacing-md);
+  }
+
+  .chat-messages {
+    padding: var(--spacing-md);
+  }
+
+  .input-area {
+    padding: var(--spacing-md);
+  }
+
+  .prompt-content {
+    padding: var(--spacing-xl);
+  }
+
+  .welcome-message {
+    padding: var(--spacing-lg);
+  }
+
+  .quick-actions {
+    justify-content: center;
+  }
+
+  .quick-action {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}
+
+/* 手機橫向 (576px - 768px) */
+@media screen and (max-width: 768px) {
+  .app-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .sidebar-toggle {
+    display: flex !important; /* 移動端顯示漢堡菜單 */
+  }
+
+  .app-title {
+    font-size: var(--font-size-lg);
+    text-align: center;
+  }
+
+  .app-title .icon {
+    font-size: var(--font-size-xl);
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .app-main {
+    flex-direction: column;
+  }
+
+  .chat-container {
+    width: 100%;
+  }
+
+  .message {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .message-bubble {
+    max-width: 90%;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .message-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-md);
+  }
+
+  .input-container {
+    margin: 0 var(--spacing-sm);
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: var(--spacing-md);
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--spacing-md);
+  }
+
+  .notifications {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+  }
+
+  .notification {
+    max-width: none;
+  }
+
+  .prompt-content {
+    padding: var(--spacing-lg);
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .api-key-input {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .quick-actions {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .quick-action {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* 手機直向 (320px - 576px) */
+@media screen and (max-width: 576px) {
+  :root {
+    --font-size-xs: 1rem;
+    --font-size-sm: 1rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.25rem;
+    --font-size-xxl: 1.5rem;
+
+    --spacing-xs: 0.2rem;
+    --spacing-sm: 0.4rem;
+    --spacing-md: 0.8rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.6rem;
+    --spacing-xxl: 2.4rem;
+  }
+
+  .app-header {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .header-content {
+    gap: var(--spacing-xs);
+  }
+
+  .app-title {
+    font-size: var(--font-size-md);
+  }
+
+  .app-title .icon {
+    font-size: var(--font-size-lg);
+  }
+
+  .header-actions {
+    gap: var(--spacing-xs);
+  }
+
+  .icon-button {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-md);
+  }
+
+  .sidebar {
+    width: 90%;
+    max-width: 280px;
+  }
+
+  .sidebar-header {
+    padding: var(--spacing-md);
+  }
+
+  .sidebar-header h3 {
+    font-size: var(--font-size-md);
+  }
+
+  .session-list {
+    padding: var(--spacing-sm);
+  }
+
+  .session-item {
+    padding: var(--spacing-sm);
+  }
+
+  .session-title {
+    font-size: var(--font-size-sm);
+  }
+
+  .session-preview {
+    font-size: var(--font-size-xs);
+  }
+
+  .chat-messages {
+    padding: var(--spacing-sm);
+  }
+
+  .welcome-message {
+    padding: var(--spacing-md);
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .assistant-avatar {
+    align-self: center;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .message {
+    gap: var(--spacing-sm);
+  }
+
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-sm);
+  }
+
+  .message-bubble {
+    max-width: 85%;
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .message-content h3 {
+    font-size: var(--font-size-lg);
+  }
+
+  .message-content p {
+    font-size: var(--font-size-sm);
+  }
+
+  .typing-indicator {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+
+  .typing-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-sm);
+  }
+
+  .input-area {
+    padding: var(--spacing-sm);
+  }
+
+  .input-container {
+    margin: 0;
+    padding: var(--spacing-xs);
+  }
+
+  .message-input {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    min-height: 40px;
+  }
+
+  .send-button {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-md);
+  }
+
+  .input-hints {
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-xs);
+  }
+
+  .command-hints {
+    display: none; /* 隱藏指令提示在小螢幕上 */
+  }
+
+  .prompt-content {
+    padding: var(--spacing-lg);
+  }
+
+  .prompt-content h3 {
+    font-size: var(--font-size-xl);
+  }
+
+  .prompt-content p {
+    font-size: var(--font-size-md);
+  }
+
+  .primary-button {
+    width: 100%;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
+  }
+
+  .modal-content {
+    width: 98%;
+    margin: var(--spacing-xs);
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .modal-header h3 {
+    font-size: var(--font-size-lg);
+  }
+
+  .modal-body {
+    padding: var(--spacing-sm);
+    max-height: 70vh;
+  }
+
+  .modal-footer {
+    padding: var(--spacing-sm);
+    flex-direction: column;
+  }
+
+  .modal-footer button {
+    width: 100%;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .setting-group {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .setting-input {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .notifications {
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    left: var(--spacing-sm);
+  }
+
+  .notification {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .notification-title {
+    font-size: var(--font-size-sm);
+  }
+
+  .notification-text {
+    font-size: var(--font-size-xs);
+  }
+
+  .loading-container h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .loading-container p {
+    font-size: var(--font-size-sm);
+  }
+
+  .empty-state {
+    padding: var(--spacing-xl);
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+  }
+
+  .empty-state h3 {
+    font-size: var(--font-size-lg);
+  }
+
+  .empty-state p {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* 超小螢幕 (最大 320px) */
+@media screen and (max-width: 320px) {
+  .sidebar {
+    width: 95%;
+  }
+
+  .prompt-content {
+    padding: var(--spacing-md);
+  }
+
+  .welcome-message {
+    padding: var(--spacing-sm);
+  }
+
+  .message-bubble {
+    max-width: 90%;
+  }
+
+  .input-group {
+    gap: var(--spacing-xs);
+  }
+
+  .quick-actions {
+    gap: var(--spacing-xs);
+  }
+
+  .modal-content {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    max-height: 100vh;
+  }
+}
+
+/* 高度適應 (短螢幕) */
+@media screen and (max-height: 600px) {
+  .welcome-message {
+    padding: var(--spacing-md);
+  }
+
+  .prompt-content {
+    padding: var(--spacing-lg);
+  }
+
+  .modal-content {
+    max-height: 90vh;
+  }
+
+  .modal-body {
+    max-height: 50vh;
+  }
+}
+
+/* 橫向模式特殊處理 */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .app-header {
+    padding: var(--spacing-xs) var(--spacing-md);
+  }
+
+  .chat-messages {
+    padding: var(--spacing-sm);
+  }
+
+  .input-area {
+    padding: var(--spacing-sm);
+  }
+
+  .welcome-message {
+    padding: var(--spacing-sm);
+  }
+
+  .prompt-content {
+    padding: var(--spacing-md);
+    max-width: 400px;
+  }
+
+  .modal-content {
+    max-height: 85vh;
+  }
+
+  .modal-body {
+    max-height: 45vh;
+  }
+}
+
+/* 觸控設備優化 */
+@media (hover: none) and (pointer: coarse) {
+  .icon-button,
+  .primary-button,
+  .danger-button,
+  .send-button {
+    min-height: 44px; /* 符合觸控目標最小尺寸 */
+    min-width: 44px;
+  }
+
+  .quick-action {
+    min-height: 44px;
+    padding: var(--spacing-md);
+  }
+
+  .session-item {
+    min-height: 60px;
+    padding: var(--spacing-md);
+  }
+
+  .setting-slider {
+    height: 12px; /* 增加滑桿高度便於觸控 */
+  }
+
+  .setting-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .message-input {
+    min-height: 48px;
+  }
+
+  /* 移除hover效果 */
+  .icon-button:hover,
+  .primary-button:hover,
+  .danger-button:hover,
+  .send-button:hover,
+  .quick-action:hover,
+  .session-item:hover,
+  .toggle-button:hover,
+  .close-button:hover,
+  .notification-close:hover {
+    transform: none;
+    background: initial;
+  }
+}
+
+/* 深色模式準備 */
+@media (prefers-color-scheme: dark) {
+  /* 暫時保留，未來可實現深色模式 */
+}
+
+/* 減少動畫 (系統設定) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .loading-spinner {
+    animation: none;
+    border: 4px solid var(--text-disabled);
+  }
+
+  .typing-dot {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  .progress-fill.animated {
+    animation: none;
+  }
+}
+
+/* 高對比模式支援 */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --text-disabled: #666666;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.3), 0 3px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.3), 0 6px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .message-bubble,
+  .input-container,
+  .sidebar,
+  .modal-content,
+  .notification {
+    border: 2px solid var(--border-color);
+  }
+}
+
+/* 列印樣式 */
+@media print {
+  .app-header,
+  .sidebar,
+  .input-area,
+  .notifications,
+  .modal {
+    display: none !important;
+  }
+
+  .chat-container {
+    width: 100% !important;
+  }
+
+  .chat-messages {
+    padding: 0 !important;
+  }
+
+  .message {
+    break-inside: avoid;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .message-bubble {
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+  }
+
+  .message-avatar {
+    display: none;
+  }
+
+  .message-bubble::before {
+    display: none;
+  }
+}
